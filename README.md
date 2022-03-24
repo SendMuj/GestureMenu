@@ -1,4 +1,4 @@
-#Small Project
+
 
 This is just a small project I decided to work on, encorporating a few different ideas I'd either had or seen somewhere else. FIgured it would be
 good practice.
