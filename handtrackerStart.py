@@ -28,10 +28,6 @@ while True:
     img = cv2.flip(img, 1)
     hands, img = handTracker.findHands(img, flipType=False)
     cv2.imshow("Video", img)
-    cTime = time.time()
-    fps = 1/(cTime-sTime)
-    sTime = cTime
-    print(fps)
     
     #Adjusting the array depending on what fingers are being held up
     if hands:
@@ -43,7 +39,7 @@ while True:
         
     #Do actions based on what gestures are made
     if len(fingers)==5:
-        opf.OpenMenu(fingers, hand1)
+        opf.OpenMenu(fingers, hand1, handTracker)
     
 
     
