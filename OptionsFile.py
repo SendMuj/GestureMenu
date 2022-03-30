@@ -6,6 +6,7 @@ from cvzone.HandTrackingModule import HandDetector
 import mediapipe as mp
 import numpy as np
 import autopy
+from pywinauto import application
 from ctypes import cast, POINTER
 from comtypes import CLSCTX_ALL
 from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
@@ -42,15 +43,16 @@ def OpenMenu(fingersup, handData, detector):
         if fingersup==[0,1,1,1,1]:
             modeTracker = 5
             modeFlag = False 
-        if fingersup==[0,0,0,0,1]:
+        if fingersup==[0,1,0,0,1]:
             modeTracker = 6
+            modeFlag = False
     
     if modeTracker == 0:
         print("base menu")
     if modeTracker == 1:
         MouseOption(fingersup, handData)
     if modeTracker == 2:
-        AudioOption(fingersup, handData, detector)
+        AudioOption(fingersup, handData)
     if modeTracker == 3:
         AppsOption(fingersup)
     if modeTracker == 4:
@@ -118,7 +120,7 @@ def MouseOption(fingersup, handData): #action to begin mouse control
         return True
         
 
-def AudioOption(fingersup, handData, detector): #action to gain volume change control
+def AudioOption(fingersup, handData): #action to gain volume change control
     global modeFlag
     global modeTracker
     global unsmoothD
@@ -136,13 +138,11 @@ def AudioOption(fingersup, handData, detector): #action to gain volume change co
     
     if fingersup==[0,1,0,0,0]:
         length = sqrt(((iX-tX)**2)+((iY-tY)**2))
-        distance = np.interp(length, (30,290), (-65.25,1))
+        distance = np.interp(length, (30,175), (-65.25,1))
         smoothD = unsmoothD + (distance - unsmoothD)/smoother
         unsmoothD = smoothD
         volume.SetMasterVolumeLevel(int(smoothD), None)
         
-
-
     if fingersup==[0,0,0,0,1]:
         modeFlag = True
         modeTracker = 0
@@ -153,12 +153,33 @@ def AudioOption(fingersup, handData, detector): #action to gain volume change co
 def AppsOption(fingersup): #action to open applications menu
     global modeFlag
     global modeTracker
+    apps = application.Application()
     
-    if fingersup==[1,1,0,0,0]:
-        print("base form in Apps")
-    if fingersup==[1,1,1,0,0]:
-        print("clicker form in Apps")
-    if fingersup==[0,1,1,1,1]:
+    if fingersup==[1,1,0,0,0]: #Launching Spotify
+        apps.start(r"C:\Users\itach\AppData\Roaming\Spotify\Spotify.exe")
+        modeFlag = True
+        modeTracker = 0
+        return True
+
+    if fingersup==[1,1,1,0,0]: #Launching Steam
+        apps.start(r"C:\Program Files (x86)\Steam\Steam.exe")
+        modeFlag = True
+        modeTracker = 0
+        return True
+
+    if fingersup==[1,1,1,1,0]: #Launching League
+        apps.start(r"C:\Riot Games\Riot Client\RiotClientServices.exe")
+        modeFlag = True
+        modeTracker = 0
+        return True
+
+    if fingersup==[1,1,1,1,1]: #Launching Firefox
+        apps.start(r"C:\Program Files\Mozilla Firefox\firefox.exe")
+        modeFlag = True
+        modeTracker = 0
+        return True
+
+    if fingersup==[0,0,0,0,1]:
         modeFlag = True
         modeTracker = 0
         print("returning to menu from Apps")
@@ -191,12 +212,12 @@ def ChillingMainMenu(fingersup): #action to go back to first menu
 def QuitOption(fingersup): #action to quit app entirely
     global modeFlag
     global modeTracker
-    if fingersup==[1,1,0,0,0]:
-        print("base form in Quit")
+    
     if fingersup==[1,1,1,0,0]:
-        print("clicker form in Quit")
-    if fingersup==[0,1,1,1,1]:
         modeFlag = True
         modeTracker = 0
         print("returning to menu from Quit")
         return True
+    
+    if fingersup==[0,1,1,1,1]:
+        sys.exit(0)
