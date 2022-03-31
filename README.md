@@ -4,3 +4,12 @@ This is just a small project I decided to work on, encorporating a few different
 good practice.
 
 A basic interactive menu navigated by simple gesture controls, raisning fingers/moving your hand etc;
+
+
+Recognition of Open Source Usage:
+    -numpy
+    -autopy
+    -pywinauto
+    -pycaw
+    -cv2
+    -cvzone

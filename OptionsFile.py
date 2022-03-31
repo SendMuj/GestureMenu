@@ -1,15 +1,13 @@
 from math import sqrt
 import sys
-import cv2
 import time
-from cvzone.HandTrackingModule import HandDetector
-import mediapipe as mp
 import numpy as np
 import autopy
 from pywinauto import application
 from ctypes import cast, POINTER
 from comtypes import CLSCTX_ALL
 from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
+import basicMenuGUI
 
 
 modeFlag = True
@@ -21,8 +19,7 @@ smoothD = 0
 smoother = 3.5
 
 #Action Functions
-def OpenMenu(fingersup, handData, detector): 
-    #Open GUI before match statement
+def OpenMenu(fingersup, handData): 
     global modeFlag
     global modeTracker
     
@@ -40,15 +37,12 @@ def OpenMenu(fingersup, handData, detector):
         if fingersup==[1,1,1,1,1]:
             modeTracker = 4
             modeFlag = False
-        if fingersup==[0,1,1,1,1]:
-            modeTracker = 5
-            modeFlag = False 
         if fingersup==[0,1,0,0,1]:
-            modeTracker = 6
+            modeTracker = 5
             modeFlag = False
     
     if modeTracker == 0:
-        print("base menu")
+        basicMenuGUI.MainMenu()
     if modeTracker == 1:
         MouseOption(fingersup, handData)
     if modeTracker == 2:
@@ -58,8 +52,6 @@ def OpenMenu(fingersup, handData, detector):
     if modeTracker == 4:
         ExtraOption(fingersup)
     if modeTracker == 5:
-        ChillingMainMenu(fingersup)
-    if modeTracker == 6:
         QuitOption(fingersup)
     
     
@@ -86,6 +78,9 @@ def MouseOption(fingersup, handData): #action to begin mouse control
     global unsmoothX, unsmoothY
     global smoothX, smoothY
     
+    #close main menu GUI then open mouse menu GUI
+    
+    #Setup for smooth mouse movement
     rawX, rawY = handData["lmList"][8][:2]
     baseX = np.interp(rawX, (250,830), (0,1919))
     baseY = np.interp(rawY, (250,470), (0,1079))
@@ -104,13 +99,13 @@ def MouseOption(fingersup, handData): #action to begin mouse control
         
     if fingersup==[1,1,1,0,0]:     #left click when middle and index finger are raised
         autopy.mouse.click()
-        time.sleep(0.75)
+        time.sleep(0.5)
         
     if fingersup==[1,1,1,1,0]:     #double click when three fingers are raised
         autopy.mouse.click()
-        time.sleep(0.1)
+        time.sleep(0.05)
         autopy.mouse.click()
-        time.sleep(0.75)
+        time.sleep(0.5)
         
     if fingersup==[0,0,0,0,1]: 
         modeFlag = True
@@ -186,28 +181,20 @@ def AppsOption(fingersup): #action to open applications menu
         return True
 
 
-def ExtraOption(fingersup): #rickroll for now, can't think of another option
+def ExtraOption(fingersup): #WAH
     global modeFlag
     global modeTracker
-    if fingersup==[1,1,0,0,0]:
-        print("base form in Extra")
-    if fingersup==[1,1,1,0,0]:
-        print("clicker form in Extra")
-    if fingersup==[0,1,1,1,1]:
-        modeFlag = True
-        modeTracker = 0
-        print("returning to menu from Extra")
-        return True
+    
+    apps = application.Application()
+    apps.start(r"C:\Program Files\Mozilla Firefox\firefox.exe {}".format("https://www.youtube.com/watch?v=fx6BSXux8wQ"))
+    # mozilla = apps.window(name_re=".*Mozilla Firefox")
+    # mozilla.type_keys('space')
+    time.sleep(3)
 
-def ChillingMainMenu(fingersup): #action to go back to first menu
-    global modeFlag
-    global modeTracker
+    modeFlag = True
+    modeTracker = 0
+    return True
 
-    if fingersup==[0,1,1,1,1]:
-        modeFlag = True
-        modeTracker = 0
-        print("just out here chillin")
-        return True
 
 def QuitOption(fingersup): #action to quit app entirely
     global modeFlag
