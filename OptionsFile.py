@@ -85,7 +85,7 @@ def MouseOption(fingersup, handData): #action to begin mouse control
     baseX = np.interp(rawX, (250,830), (0,1919))
     baseY = np.interp(rawY, (250,470), (0,1079))
     
-
+    basicMenuGUI.MouseMenu()
     
     if fingersup==[1,1,0,0,0]:     #move the mouse
         smoothX = unsmoothX + (baseX - unsmoothX)/smoother
@@ -106,6 +106,9 @@ def MouseOption(fingersup, handData): #action to begin mouse control
         time.sleep(0.05)
         autopy.mouse.click()
         time.sleep(0.5)
+    
+    if fingersup==[1,1,1,1,1]:
+        return True #add open/closing UI here
         
     if fingersup==[0,0,0,0,1]: 
         modeFlag = True
