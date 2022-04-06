@@ -50,7 +50,7 @@ def OpenMenu(fingersup, handData):
     if modeTracker == 3:
         AppsOption(fingersup)
     if modeTracker == 4:
-        ExtraOption(fingersup)
+        ExtraOption()
     if modeTracker == 5:
         QuitOption(fingersup)
     
@@ -106,14 +106,10 @@ def MouseOption(fingersup, handData): #action to begin mouse control
         time.sleep(0.05)
         autopy.mouse.click()
         time.sleep(0.5)
-    
-    if fingersup==[1,1,1,1,1]:
-        return True #add open/closing UI here
         
     if fingersup==[0,0,0,0,1]: 
         modeFlag = True
         modeTracker = 0
-        print("returning to menu from mouse")
         time.sleep(1.5)
         return True
         
@@ -133,6 +129,7 @@ def AudioOption(fingersup, handData): #action to gain volume change control
     IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
     volume = cast(interface, POINTER(IAudioEndpointVolume))
     ##########
+    basicMenuGUI.AudioMenu()
     
     if fingersup==[0,1,0,0,0]:
         length = sqrt(((iX-tX)**2)+((iY-tY)**2))
@@ -144,7 +141,7 @@ def AudioOption(fingersup, handData): #action to gain volume change control
     if fingersup==[0,0,0,0,1]:
         modeFlag = True
         modeTracker = 0
-        print("returning to menu from audio")
+        time.sleep(1.5)
         return True
 
 
@@ -152,6 +149,9 @@ def AppsOption(fingersup): #action to open applications menu
     global modeFlag
     global modeTracker
     apps = application.Application()
+    
+    basicMenuGUI.AppsMenu()
+    time.sleep(1.5)
     
     if fingersup==[1,1,0,0,0]: #Launching Spotify
         apps.start(r"C:\Users\itach\AppData\Roaming\Spotify\Spotify.exe")
@@ -180,11 +180,11 @@ def AppsOption(fingersup): #action to open applications menu
     if fingersup==[0,0,0,0,1]:
         modeFlag = True
         modeTracker = 0
-        print("returning to menu from Apps")
+        time.sleep(1.5)
         return True
 
 
-def ExtraOption(fingersup): #WAH
+def ExtraOption(): #WAH
     global modeFlag
     global modeTracker
     
@@ -203,10 +203,12 @@ def QuitOption(fingersup): #action to quit app entirely
     global modeFlag
     global modeTracker
     
+    basicMenuGUI.QuitMenu()
+    
     if fingersup==[1,1,1,0,0]:
         modeFlag = True
         modeTracker = 0
-        print("returning to menu from Quit")
+        time.sleep(1.5)
         return True
     
     if fingersup==[0,1,1,1,1]:
